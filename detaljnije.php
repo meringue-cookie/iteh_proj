@@ -1,4 +1,15 @@
-<?php include 'sesija.php'; ?>
+<?php include 'sesija.php';
+      include 'konekcija.php';
+      $pom = $konekcija->real_escape_string($_GET['id']);
+      $id = intval($pom);
+
+      $upit = "SELECT * from proizvod where proizvodID = $id";
+      $rez = $konekcija->query($upit);
+      $niz = [];
+      while($red = $rez->fetch_assoc()){
+        array_push($niz,$red);
+      }
+ ?>
 
 <!DOCTYPE html>
 <html class="no-js" lang="en">
@@ -31,21 +42,11 @@
             </div>
         </div>
         <div class="container">
-          <h1 class="text-center" style="text-decoration-line: underline;">Spisak proizvoda</h1>
-          <p class="text-center">Pretraga po ceni</p>
-          <div class="row text-center">
-            <div class="col-md-6">
-              <input type="number" class="form-control" placeholder="Minimalna cena" id="min">
-            </div>
-            <div class="col-md-6">
-              <input type="number" class="form-control" placeholder="Maksimalna cena" id="max">
-            </div>
-            <div class="col-md-12">
-              <input type="button" class="button" style="width:30rem; background-color: #FFA07A; border-radius: 12px; border: 2px solid #FF7F50;" value="Pretraži" onclick="pretrazi()">
-            </div>
-        </div>
+          <h1 class="text-center" style="text-decoration-line: underline;">Detalji o proizvodu</h1>
+          <h2>Naziv proizvoda: <?php echo $niz[0]['naziv']; ?></h2>
+          <h3>Cena: <?php echo $niz[0]['cena']; ?> dinara</h3>
+          <img src="images/<?php echo $niz[0]['slika']; ?>" class="img img-responsive">
       </div>
-      <div class="container text-center" id="podaci"></div>
 
 
     </section>
@@ -67,20 +68,7 @@
     <script src="js/plugins.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
-      function pretrazi(){
-        var min = $("#min").val();
-        var max = $("#max").val();
-        $.ajax({
-          url: "vratiProizvode.php",
-          data: {min:min,max:max},
-          success: function(podaci){
-              $("#podaci").html(podaci);
-          }
-        });
-      }
 
-    </script>
 
 </body>
 

@@ -1,4 +1,18 @@
-<?php include 'sesija.php'; ?>
+<?php include 'sesija.php';
+
+include 'konekcija.php';
+$poruka = "";
+if(isset($_POST['login'])){
+  $user = trim($_POST['korIme']);
+  $password = trim($_POST['lozinka']);
+  if(Kupac::login($konekcija,$user,$password)){
+    header("Location:index.php");
+  }else{
+    $poruka = "Neuspešno logovanje. Vaše korisničko ime ili šifra nisu ispravni.";
+  }
+}
+
+?>
 
 <!DOCTYPE html>
 <html class="no-js" lang="en">
@@ -21,6 +35,7 @@
 
 <body id="top">
   <?php include 'header.php'; ?>
+
     <section class="s-content">
 
         <div class="row masonry-wrap">
@@ -31,26 +46,26 @@
             </div>
         </div>
         <div class="container">
-          <h1 class="text-center" style="text-decoration-line: underline;">Spisak proizvoda</h1>
-          <p class="text-center">Pretraga po ceni</p>
-          <div class="row text-center">
-            <div class="col-md-6">
-              <input type="number" class="form-control" placeholder="Minimalna cena" id="min">
-            </div>
-            <div class="col-md-6">
-              <input type="number" class="form-control" placeholder="Maksimalna cena" id="max">
-            </div>
-            <div class="col-md-12">
-              <input type="button" class="button" style="width:30rem; background-color: #FFA07A; border-radius: 12px; border: 2px solid #FF7F50;" value="Pretraži" onclick="pretrazi()">
-            </div>
-        </div>
+            <h1 class="text-center" style="text-decoration-line: underline;">Login forma</h1>
+            <div class="row text-center">
+              <form method="post" action="">
+              <div class="col-md-12">
+                <input type="text" class="form-control" placeholder="Korisničko ime" name="korIme" id="korIme">
+              </div>
+              <div class="col-md-12">
+                <input type="password" class="form-control" placeholder="Lozinka" id="lozinka" name="lozinka">
+              </div>
+              <div class="col-md-12">
+                <input type="submit" class="button" style="width:30rem; background-color: #FFA07A; border-radius: 12px; border: 2px solid #FF7F50;" name="login" value="Login">
+              </div>
+            </form>
+            <p><?php echo $poruka; ?></p>
+          </div>
       </div>
-      <div class="container text-center" id="podaci"></div>
-
 
     </section>
-    <?php include 'footer.php'; ?>
 
+    <?php include 'footer.php'; ?>
 
     <div id="preloader">
         <div id="loader">
@@ -67,20 +82,6 @@
     <script src="js/plugins.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
-      function pretrazi(){
-        var min = $("#min").val();
-        var max = $("#max").val();
-        $.ajax({
-          url: "vratiProizvode.php",
-          data: {min:min,max:max},
-          success: function(podaci){
-              $("#podaci").html(podaci);
-          }
-        });
-      }
-
-    </script>
 
 </body>
 
